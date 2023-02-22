@@ -7,11 +7,18 @@
 
 <div> <!--Name below must match the name in the model-->
     <form method="post">
-        <label>
-            First Name
-        </label>
-        <label asp-for="Category">Category:</label>
-        <input asp-for="Category" /><br />
+        <div asp-validation-summary="All"></div>
+
+        <label asp-for="CategoryID">Category:</label>
+        <select asp-for="CategoryID">
+            <option value="">Select Category</option>
+            <!--Printing out the list of majors here -->
+            @foreach (Category m in ViewBag.Categories)
+            {
+                <option value="@m.CategoryID">@m.CategoryName</option> //if you select a category name you are actually selecting that categoryID
+            }
+        </select>
+        <br />
 
         <label asp-for="Title">Title:</label>
         <input asp-for="Title" /><br />

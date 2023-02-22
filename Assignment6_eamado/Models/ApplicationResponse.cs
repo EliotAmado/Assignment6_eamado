@@ -11,11 +11,20 @@ namespace Assignment6_eamado.Models
         [Key]
         [Required]
         public int MovieId { get; set; }
-        public string Category { get; set; } //make these atomic
+        [Required(ErrorMessage ="Title Required")]
         public string Title { get; set; }
+        [Required(ErrorMessage = "Year Required")]
         public byte Year { get; set; }
+        [Required(ErrorMessage = "Director Required")]
         public string Director { get; set; }
+        [Required(ErrorMessage = "Rating Required")]
         public string Rating { get; set; }
+        [Required(ErrorMessage = "Edited Required")]
         public bool Edited { get; set; }
+
+        //build a foreign key relationsgio
+        public int CategoryID { get; set; } //This is a foregin key
+        public Category Category { get; set; }
+
     }
 }

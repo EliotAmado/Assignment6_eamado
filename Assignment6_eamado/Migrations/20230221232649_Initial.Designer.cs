@@ -2,14 +2,16 @@
 using Assignment6_eamado.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Assignment6_eamado.Migrations
 {
     [DbContext(typeof(MovieApplicationContext))]
-    partial class MovieApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230221232649_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

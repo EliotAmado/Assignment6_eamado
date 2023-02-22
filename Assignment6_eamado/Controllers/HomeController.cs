@@ -1,5 +1,6 @@
 ﻿using Assignment6_eamado.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,12 @@ namespace Assignment6_eamado.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private MovieApplicationContext blahContext { get; set; }
+        private MovieApplicationContext daContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, MovieApplicationContext someName)
+        //constructor
+        public HomeController(MovieApplicationContext someName)
         {
-            _logger = logger;
-            blahContext = someName;
+            daContext = someName;
         }
 
         public IActionResult Index()
@@ -26,11 +26,10 @@ namespace Assignment6_eamado.Controllers
         }
 
         [HttpGet]
-        public IActionResult MovieApplication()
+        public IActionResult MovieApplication() 
         {
-            /*            return View("MovieApplication"); //movie application is a file we created in the views folder
-             *            
-            */
+            ViewBag.Categories = daContext.Categories.ToList(); //setting up variable to hold list of categories in the seed data 
+
             return View(); //sends user to confirmation page we created
         }
 
@@ -38,19 +37,66 @@ namespace Assignment6_eamado.Controllers
         [HttpPost]
         public IActionResult MovieApplication(ApplicationResponse ar) //what are we cathing from movieapp.cshtml
         {
-            blahContext.Add(ar);
-            blahContext.SaveChanges();
-            return View("Confirmation", ar);     //Will have all information applicationResponse (all user inputs that page)
-        }
-        public IActionResult Privacy()
-        {
-            return View();
+            if(ModelState.IsValid)
+            {
+                daContext.Add(ar);
+                daContext.SaveChanges();
+                return View("Confirmation", ar);     //Will have all information applicationResponse (all user inputs that page)
+            }
+            else //if invalid
+            {
+                ViewBag.Categories = daContext.Categories.ToList(); 
+                return View(); //chance to redo entries
+            }
+
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult WaitList ()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            //filtering the data any way we want to in waitlist page from user inputs
+            var applications = daContext.responses
+                .Include(x=> x.Category) // allows us to show the x.Category.CategoryName in waitlist page
+                //.Where(x => x.Edited == true)
+                .OrderBy(x => x.Category)
+                .ToList(); //setting up a database set, so we can loop through it one at a time
+            return View(applications);
         }
+
+        [HttpGet]
+        public IActionResult Edit(int applicationid) //edit page, applicaitonid is from our Waitlist page
+        {
+            ViewBag.Categories = daContext.Categories.ToList(); //setting up variable to hold list of categories in the seed data 
+            
+            var application = daContext.responses.Single(x => x.MovieId == applicationid); 
+
+            return View("MovieApplication", application);
+        }
+
+        //Updating record
+        [HttpPost]
+        public IActionResult Edit(ApplicationResponse blah)
+        {
+            daContext.Update(blah); //update changes
+            daContext.SaveChanges(); //save changes
+
+            return RedirectToAction("Waitlist"); //return to waitlists page
+        }
+
+        [HttpGet]
+        public IActionResult Delete (int applicationid)
+        {
+            var application = daContext.responses.Single(x => x.MovieId == applicationid);
+            return View(application);
+        }
+
+        [HttpPost]
+        public IActionResult Delete (ApplicationResponse ar)
+        {
+            daContext.responses.Remove(ar);
+            daContext.SaveChanges();
+            return RedirectToAction("Waitlist");
+        }
+
     }
 }

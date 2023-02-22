@@ -14,15 +14,28 @@ namespace Assignment6_eamado.Models
             //leave blank for now
         }
         public DbSet<ApplicationResponse> responses { get; set; } //set of data that calls context files and turns it into a set of responses
-
+        public DbSet<Category> Categories { get; set; }
+        
+        
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            mb.Entity<Category>().HasData(
+                new Category { CategoryID=1, CategoryName = "Horror"},
+                new Category { CategoryID=2, CategoryName = "Action" },
+                new Category { CategoryID=3, CategoryName = "Comedy" },
+                new Category { CategoryID=4, CategoryName = "Drama" },
+                new Category { CategoryID=5, CategoryName = "Fantasy" },
+                new Category { CategoryID=6, CategoryName = "Mystery" },
+                new Category { CategoryID=7, CategoryName = "Romance" },
+                new Category { CategoryID=8, CategoryName = "Thriller" },
+                new Category { CategoryID=9, CategoryName = "Sci-Fi" }
+                );
             mb.Entity<ApplicationResponse>().HasData(
 
                 new ApplicationResponse
                 {
                     MovieId = 1,
-                    Category = "Horror",
+                    CategoryID = 1,
                     Title = "The Purge",
                     Year = 18,
                     Director = "Gerald McMurray",
@@ -32,7 +45,7 @@ namespace Assignment6_eamado.Models
                 new ApplicationResponse
                 {
                     MovieId = 2,
-                    Category = "Horror",
+                    CategoryID = 1,
                     Title = "Annabell",
                     Year = 14,
                     Director = "David Sandberg",
@@ -42,14 +55,14 @@ namespace Assignment6_eamado.Models
                 new ApplicationResponse
                 {
                     MovieId = 3,
-                    Category = "Horror",
+                    CategoryID = 1,
                     Title = "DeathDoor",
                     Year = 99,
                     Director = "Devin Hopkins",
                     Rating = "R",
                     Edited = true
                 }
-                ) ;
+                ) ; //cool
         }
     }
 }
